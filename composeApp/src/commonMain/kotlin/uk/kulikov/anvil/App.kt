@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import uk.kulikov.anvil.composable.tool.AnvilMoveTileComposable
 import uk.kulikov.anvil.composable.tool.TargetSelectableComposable
+import uk.kulikov.anvil.composable.tool.TargetSliderComposable
+import uk.kulikov.anvil.model.AnvilConfig
 import uk.kulikov.anvil.model.AnvilMove
 
 @Composable
@@ -27,7 +29,18 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TargetSelectableComposable()
+            var config by remember { mutableStateOf(AnvilConfig()) }
+
+            TargetSliderComposable(
+                counter = config.target,
+                onCounterChange = { config = config.copyWithNewTarget(newTarget = it) }
+            )
+
+            TargetSelectableComposable(
+                counter = config.target,
+                onCounterChange = { config = config.copyWithNewTarget(newTarget = it) }
+            )
+
             var move by remember { mutableStateOf<AnvilMove?>(null) }
             AnvilMoveTileComposable(
                 "Final",

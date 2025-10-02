@@ -47,18 +47,20 @@ import kotlin.math.min
 private const val ANVIL_LIMIT = 140
 
 @Composable
-fun TargetSelectableComposable() {
+fun TargetSelectableComposable(
+    counter: Int,
+    onCounterChange: (Int) -> Unit,
+) {
     Row {
         Text(
             text = "Target",
             style = MaterialTheme.typography.titleMedium,
         )
 
-        var counter by remember { mutableStateOf(0) }
         TargetSelectableComposableInternal(
             modifier = Modifier.weight(1f),
             counter = counter,
-            onCounterChange = { counter = min(ANVIL_LIMIT, max(0, it)) }
+            onCounterChange = onCounterChange
         )
     }
 }
