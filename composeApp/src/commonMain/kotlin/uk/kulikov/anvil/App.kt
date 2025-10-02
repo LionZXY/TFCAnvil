@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import uk.kulikov.anvil.composable.tool.AnvilMoveTileComposable
+import uk.kulikov.anvil.composable.tool.TargetSelectableComposable
 import uk.kulikov.anvil.model.AnvilMove
 
 @Composable
@@ -26,6 +27,7 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            TargetSelectableComposable()
             var move by remember { mutableStateOf<AnvilMove?>(null) }
             AnvilMoveTileComposable(
                 "Final",

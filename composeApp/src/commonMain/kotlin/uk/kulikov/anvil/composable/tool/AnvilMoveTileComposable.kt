@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +22,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import uk.kulikov.anvil.model.AnvilMove
 
-@Preview
 @Composable
 fun AnvilMoveTileComposable(
     title: String,
@@ -85,5 +88,16 @@ private fun AnvilMatrixComposableIcon(
             .clickable(onClick = onSelect),
         painter = painterResource(move.icon),
         contentDescription = null
+    )
+}
+
+@Composable
+@Preview
+private fun AnvilMoveTileComposablePreview() {
+    var move by remember { mutableStateOf<AnvilMove?>(null) }
+    AnvilMoveTileComposable(
+        "Final",
+        selectedMove = move,
+        onSelectMove = { move = it }
     )
 }
