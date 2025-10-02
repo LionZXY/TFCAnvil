@@ -79,7 +79,6 @@ private fun TargetRuler(
                     onCounterChange(value)
                 }
             }
-
     ) {
         val startX = innerPadding.calculateStartPadding(LayoutDirection.Ltr).toPx()
         val endX = size.width - innerPadding.calculateEndPadding(LayoutDirection.Ltr).toPx()
@@ -104,12 +103,19 @@ private fun TargetRuler(
                 else -> 10.dp.toPx()
             }
 
+            val color = when {
+                i % 20 == 0 -> Color.Black
+                i % 10 == 0 -> Color(0xFF49713F)
+                else -> Color.Gray
+            }
+
             drawLine(
-                color = if (i % 10 == 0) Color.Black else Color.Gray,
+                color = color,
                 start = Offset(x, baseY),
                 end = Offset(x, baseY - tickHeight),
-                strokeWidth = if (i % 20 == 0) 2f else 1f
+                strokeWidth = if (i % 10 == 0) 6f else 3f
             )
+
             if (i % 20 == 0) {
                 val width = 40.dp.toPx()
                 drawText(
@@ -127,6 +133,23 @@ private fun TargetRuler(
                 )
             }
         }
+        val lineOffsetX = 6.dp.toPx()
+        val pxToPoint = (endX - startX) / RANGE
+        val offset = counter * pxToPoint + startX
+        val highlightY = baseY + 4.dp.toPx()
+        val heightLine = ((highlightY - lineOffsetX) / 2) - 2.dp.toPx()
+        drawLine(
+            color = Color(0xFFDE401F),
+            start = Offset(offset, highlightY),
+            end = Offset(offset, highlightY - heightLine),
+            strokeWidth = 6f
+        )
+        drawLine(
+            color = Color(0xFFDE401F),
+            start = Offset(offset, lineOffsetX),
+            end = Offset(offset, heightLine + lineOffsetX),
+            strokeWidth = 6f
+        )
     }
 }
 
