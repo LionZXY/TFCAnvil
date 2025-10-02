@@ -44,14 +44,13 @@ import tfcanvil.composeapp.generated.resources.select_plus5
 import kotlin.math.max
 import kotlin.math.min
 
-private const val ANVIL_LIMIT = 140
-
 @Composable
 fun TargetSelectableComposable(
     counter: Int,
     onCounterChange: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Row {
+    Row(modifier) {
         Text(
             text = "Target",
             style = MaterialTheme.typography.titleMedium,
