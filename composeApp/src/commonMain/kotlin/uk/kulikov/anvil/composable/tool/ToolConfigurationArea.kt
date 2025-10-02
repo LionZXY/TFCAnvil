@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ajailani.grid_compose.component.VerticalGrid
 import com.ajailani.grid_compose.util.GridCellType
@@ -29,7 +30,7 @@ fun ToolConfigurationArea(
         )
         Column(
             modifier = Modifier.fillMaxWidth()
-                .border(1.dp, MaterialTheme.colorScheme.onPrimary)
+                .border(1.dp, Color.Black)
                 .padding(vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally

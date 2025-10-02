@@ -9,13 +9,13 @@ fun solve(
     config: AnvilConfig
 ): Result<List<AnvilMove>> = runCatching {
     val finalMove = config.finalMove ?:
-    throw AnvilMoveException("No final move has been selected. Please select one.")
+    throw AnvilMoveException("No \"Final\" move has been selected. Please select one.")
 
     val secondMove = config.secondMove
-        ?: throw AnvilMoveException("No second move has been selected. Please select one.")
+        ?: throw AnvilMoveException("No \"2nd last\" move has been selected. Please select one.")
 
     val thirdMove = config.thirdMove
-        ?: throw AnvilMoveException("No third move has been selected. Please select one.")
+        ?: throw AnvilMoveException("No \"3nd last\" move has been selected. Please select one.")
     val req3 = listOf(finalMove, secondMove, thirdMove)
 
     // Queue holds pairs: current sum and path (list of moves)

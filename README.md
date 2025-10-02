@@ -6,4 +6,4 @@ There is currently a [Python script](https://github.com/Ertivc/ErtisTFCForgingBu
 
 Therefore, I rewrote that example in Compose Multiplatform with Web support.
 
-Available here:
+Available here: [https://lionzxy.github.io/TFCAnvil/](https://lionzxy.github.io/TFCAnvil/)
