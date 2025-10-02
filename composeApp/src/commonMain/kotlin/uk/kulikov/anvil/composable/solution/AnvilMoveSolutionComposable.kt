@@ -28,6 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.ajailani.grid_compose.component.VerticalGrid
+import com.ajailani.grid_compose.util.GridCellType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -58,7 +60,7 @@ fun AnvilMoveSolutionComposable(
 
     Column(modifier) {
         Text(
-            text = "Tool Configuration",
+            text = "Solution",
             style = MaterialTheme.typography.titleLarge
         )
         Column(
@@ -110,9 +112,9 @@ private fun AnvilMoveSolutionInternal(
     moves: List<AnvilMove>,
     modifier: Modifier = Modifier
 ) {
-    LazyVerticalGrid(
+    VerticalGrid(
         modifier = modifier,
-        columns = GridCells.Adaptive(minSize = 48.dp)
+        columns = GridCellType.Adaptive(48.dp + 2.dp)
     ) {
         items(moves.size) {
             val move = moves[it]
