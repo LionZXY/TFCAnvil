@@ -6,11 +6,10 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,8 +19,7 @@ import uk.kulikov.anvil.model.AnvilConfig
 
 @Composable
 fun ToolConfigurationArea(
-    anvilConfig: AnvilConfig,
-    onAnvilConfigChange: (AnvilConfig) -> Unit,
+    anvilConfig: MutableState<AnvilConfig>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
@@ -38,7 +36,6 @@ fun ToolConfigurationArea(
         ) {
             ToolConfigurationAreaInternal(
                 anvilConfig = anvilConfig,
-                onAnvilConfigChange = onAnvilConfigChange
             )
         }
     }
@@ -48,20 +45,19 @@ private val MIN_WIDTH = 230.dp
 
 @Composable
 private fun ToolConfigurationAreaInternal(
-    anvilConfig: AnvilConfig,
-    onAnvilConfigChange: (AnvilConfig) -> Unit
+    anvilConfig: MutableState<AnvilConfig>,
 ) {
     TargetSelectableComposable(
         modifier = Modifier.padding(horizontal = 16.dp),
-        counter = anvilConfig.target,
+        counter = anvilConfig.value.target,
         onCounterChange = {
-            onAnvilConfigChange(anvilConfig.copyWithNewTarget(newTarget = it))
+            anvilConfig.value = anvilConfig.value.copyWithNewTarget(newTarget = it)
         }
     )
     TargetSliderComposable(
-        counter = anvilConfig.target,
+        counter = anvilConfig.value.target,
         onCounterChange = {
-            onAnvilConfigChange(anvilConfig.copyWithNewTarget(newTarget = it))
+            anvilConfig.value = anvilConfig.value.copyWithNewTarget(newTarget = it)
         }
     )
 
@@ -81,9 +77,9 @@ private fun ToolConfigurationAreaInternal(
                     else -> "3rd last"
                 }
                 val selectedMove = when (index) {
-                    0 -> anvilConfig.finalMove
-                    1 -> anvilConfig.secondMove
-                    else -> anvilConfig.thirdMove
+                    0 -> anvilConfig.value.finalMove
+                    1 -> anvilConfig.value.secondMove
+                    else -> anvilConfig.value.thirdMove
                 }
 
                 AnvilMoveTileComposable(
@@ -91,10 +87,10 @@ private fun ToolConfigurationAreaInternal(
                     title = title,
                     selectedMove = selectedMove,
                     onSelectMove = {
-                        when (index) {
-                            0 -> onAnvilConfigChange(anvilConfig.copy(finalMove = it))
-                            1 -> onAnvilConfigChange(anvilConfig.copy(secondMove = it))
-                            else -> onAnvilConfigChange(anvilConfig.copy(thirdMove = it))
+                        anvilConfig.value = when (index) {
+                            0 -> anvilConfig.value.copy(finalMove = it)
+                            1 -> anvilConfig.value.copy(secondMove = it)
+                            else -> anvilConfig.value.copy(thirdMove = it)
                         }
                     }
                 )

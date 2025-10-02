@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,17 +41,17 @@ import uk.kulikov.anvil.utils.solve
 
 @Composable
 fun AnvilMoveSolutionComposable(
-    anvilConfig: AnvilConfig,
+    anvilConfig: State<AnvilConfig>,
     modifier: Modifier = Modifier,
 ) {
     var solution by remember {
         mutableStateOf<Result<List<AnvilMove>>?>(null)
     }
     val scope = rememberCoroutineScope()
-    DisposableEffect(anvilConfig to scope) {
+    DisposableEffect(anvilConfig.value to scope) {
         solution = null
         val job = scope.launch {
-            solution = solve(anvilConfig)
+            solution = solve(anvilConfig.value)
         }
         onDispose {
             job.cancel()
