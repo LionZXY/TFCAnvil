@@ -73,14 +73,14 @@ private fun ToolConfigurationAreaInternal(
         ) {
             items(3) { index ->
                 val title = when (index) {
-                    0 -> "Final"
+                    0 -> "3rd last"
                     1 -> "2nd last"
-                    else -> "3rd last"
+                    else -> "Final"
                 }
                 val selectedMove = when (index) {
-                    0 -> anvilConfig.value.finalMove
+                    0 -> anvilConfig.value.thirdMove
                     1 -> anvilConfig.value.secondMove
-                    else -> anvilConfig.value.thirdMove
+                    else -> anvilConfig.value.finalMove
                 }
 
                 AnvilMoveTileComposable(
@@ -89,9 +89,9 @@ private fun ToolConfigurationAreaInternal(
                     selectedMove = selectedMove,
                     onSelectMove = {
                         anvilConfig.value = when (index) {
-                            0 -> anvilConfig.value.copy(finalMove = it)
+                            0 -> anvilConfig.value.copy(thirdMove = it)
                             1 -> anvilConfig.value.copy(secondMove = it)
-                            else -> anvilConfig.value.copy(thirdMove = it)
+                            else -> anvilConfig.value.copy(finalMove = it)
                         }
                     }
                 )

@@ -26,7 +26,7 @@ import uk.kulikov.anvil.model.AnvilMove
 fun AnvilMoveTileComposable(
     title: String,
     selectedMove: AnvilMove? = null,
-    onSelectMove: (AnvilMove) -> Unit,
+    onSelectMove: (AnvilMove?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -39,7 +39,14 @@ fun AnvilMoveTileComposable(
         )
 
         AnvilMatrixComposable(
-            selectedMove, onSelectMove
+            selectedMove,
+            onSelectMove = { clickedMove ->
+                if (clickedMove == selectedMove) {
+                    onSelectMove(null)
+                } else {
+                    onSelectMove(clickedMove)
+                }
+            }
         )
     }
 }
