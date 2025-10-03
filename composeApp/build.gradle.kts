@@ -33,6 +33,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.compose.autosize)
+            implementation(libs.settings.core)
+            implementation(libs.settings.observable)
+            implementation(libs.settings.coroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

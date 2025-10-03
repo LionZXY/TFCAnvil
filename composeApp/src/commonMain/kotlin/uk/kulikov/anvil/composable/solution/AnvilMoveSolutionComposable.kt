@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,14 +32,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ajailani.grid_compose.component.VerticalGrid
 import com.ajailani.grid_compose.util.GridCellType
+import com.russhwolf.settings.ExperimentalSettingsApi
+import com.russhwolf.settings.coroutines.getBooleanFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import uk.kulikov.anvil.composable.common.AnvilMoveComposable
 import uk.kulikov.anvil.model.AnvilConfig
 import uk.kulikov.anvil.model.AnvilMove
 import uk.kulikov.anvil.utils.AnvilMoveException
+import uk.kulikov.anvil.utils.LocalSettings
 import uk.kulikov.anvil.utils.solve
 
+private const val SETTING_KEY = "step_by_step"
+
+@OptIn(ExperimentalSettingsApi::class)
 @Composable
 fun AnvilMoveSolutionComposable(
     anvilConfig: State<AnvilConfig>,
@@ -61,7 +68,10 @@ fun AnvilMoveSolutionComposable(
 
 
     Column(modifier) {
-        val stepByStepSolution = rememberSaveable { mutableStateOf(false) }
+        val settings = LocalSettings.current
+        val stepByStepSolution by remember {
+            settings.getBooleanFlow(SETTING_KEY, false)
+        }.collectAsState(false)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -81,8 +91,8 @@ fun AnvilMoveSolutionComposable(
                 )
                 Checkbox(
                     modifier = Modifier.size(16.dp),
-                    checked = stepByStepSolution.value,
-                    onCheckedChange = { stepByStepSolution.value = it }
+                    checked = stepByStepSolution,
+                    onCheckedChange = { settings.putBoolean(SETTING_KEY, it) }
                 )
             }
         }
@@ -95,7 +105,7 @@ fun AnvilMoveSolutionComposable(
         ) {
             val result = solution?.getOrNull()
             if (result != null) {
-                if (stepByStepSolution.value) {
+                if (stepByStepSolution) {
                     StepByStepSolutionInternal(anvilConfig.value, result)
                 } else {
                     AnvilMoveSolutionInternal(
