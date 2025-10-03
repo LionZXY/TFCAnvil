@@ -8,6 +8,7 @@ class AnvilMoveException(message: String) : Throwable(message)
 fun solve(
     config: AnvilConfig
 ): Result<List<AnvilMove>> = runCatching {
+    val req3 = config.getRequestList()
     // Queue holds pairs: current sum and path (list of moves)
     val q = ArrayDeque<Pair<Int, List<AnvilMove>>>()
     q.addLast(0 to emptyList())
@@ -20,7 +21,7 @@ fun solve(
         val (value, path) = q.removeFirst()
 
         // Check target and last 3 moves
-        if (isPathValid(value, path, config)) {
+        if (value == config.target && path.takeLast(req3.size) == req3) {
             return@runCatching path
         }
 
@@ -35,25 +36,4 @@ fun solve(
         }
     }
     throw AnvilMoveException("No solution found")
-}
-
-private fun isPathValid(value: Int, path: List<AnvilMove>, config: AnvilConfig): Boolean {
-    if (value != config.target) {
-        return false
-    }
-    val lastElements = mutableListOf<AnvilMove>()
-
-    if (config.thirdMove != null) {
-        lastElements.add(config.thirdMove)
-    }
-
-    if (config.secondMove != null) {
-        lastElements.add(config.secondMove)
-    }
-
-    if (config.finalMove != null) {
-        lastElements.add(config.finalMove)
-    }
-
-    return path.takeLast(lastElements.size) == lastElements
 }

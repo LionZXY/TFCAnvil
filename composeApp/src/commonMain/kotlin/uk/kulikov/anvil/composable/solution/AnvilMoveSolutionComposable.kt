@@ -3,11 +3,17 @@ package uk.kulikov.anvil.composable.solution
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -17,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +33,7 @@ import com.ajailani.grid_compose.component.VerticalGrid
 import com.ajailani.grid_compose.util.GridCellType
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import uk.kulikov.anvil.composable.common.AnvilMoveComposable
 import uk.kulikov.anvil.model.AnvilConfig
 import uk.kulikov.anvil.model.AnvilMove
 import uk.kulikov.anvil.utils.AnvilMoveException
@@ -53,10 +61,31 @@ fun AnvilMoveSolutionComposable(
 
 
     Column(modifier) {
-        Text(
-            text = "Solution",
-            style = MaterialTheme.typography.titleLarge
-        )
+        val stepByStepSolution = rememberSaveable { mutableStateOf(false) }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Solution",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Enable step by step mode:",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Checkbox(
+                    modifier = Modifier.size(16.dp),
+                    checked = stepByStepSolution.value,
+                    onCheckedChange = { stepByStepSolution.value = it }
+                )
+            }
+        }
         Column(
             modifier = Modifier.fillMaxWidth()
                 .border(1.dp, Color.Black)
@@ -66,35 +95,15 @@ fun AnvilMoveSolutionComposable(
         ) {
             val result = solution?.getOrNull()
             if (result != null) {
-                AnvilMoveSolutionInternal(
-                    moves = result
-                )
-            }
-            val localSolution = solution
-            val text = if (localSolution == null) {
-                "Loading..."
-            } else {
-                val exception = localSolution.exceptionOrNull()
-                when (exception) {
-                    null -> {
-                        null
-                    }
-                    is AnvilMoveException -> {
-                        exception.message
-                    }
-
-                    else -> {
-                        exception.printStackTrace()
-                        "Unknown error"
-                    }
+                if (stepByStepSolution.value) {
+                    StepByStepSolutionInternal(anvilConfig.value, result)
+                } else {
+                    AnvilMoveSolutionInternal(
+                        moves = result
+                    )
                 }
-            }
-
-            if (text != null) {
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            } else {
+                AnvilMoveError(solution)
             }
         }
     }
@@ -102,23 +111,50 @@ fun AnvilMoveSolutionComposable(
 }
 
 @Composable
+private fun AnvilMoveError(solution: Result<List<AnvilMove>>?) {
+    val text = if (solution == null) {
+        "Loading..."
+    } else {
+        when (val exception = solution.exceptionOrNull()) {
+            null -> {
+                null
+            }
+
+            is AnvilMoveException -> {
+                exception.message
+            }
+
+            else -> {
+                exception.printStackTrace()
+                "Unknown error"
+            }
+        }
+    }
+
+    if (text != null) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
+@Composable
 private fun AnvilMoveSolutionInternal(
     moves: List<AnvilMove>,
     modifier: Modifier = Modifier
 ) {
+    if (moves.isEmpty()) {
+        Text("Select target value first")
+    }
     VerticalGrid(
         modifier = modifier,
         columns = GridCellType.Adaptive(48.dp + 2.dp)
     ) {
         items(moves.size) {
-            val move = moves[it]
-
-            Image(
-                modifier = Modifier
-                    .padding(2.dp)
-                    .size(48.dp),
-                painter = painterResource(move.icon),
-                contentDescription = null
+            AnvilMoveComposable(
+                modifier = Modifier.padding(2.dp),
+                move = moves[it]
             )
         }
     }

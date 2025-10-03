@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import uk.kulikov.anvil.composable.common.AnvilMoveComposable
 import uk.kulikov.anvil.model.AnvilMove
 
 @Composable
@@ -88,13 +89,11 @@ private fun AnvilMatrixComposableIcon(
     isSelected: Boolean,
     onSelect: () -> Unit,
 ) {
-    Image(
+    AnvilMoveComposable(
+        move = move,
         modifier = Modifier
-            .size(48.dp)
             .border(3.dp, if (isSelected) Color.Yellow else Color.Black)
-            .clickable(onClick = onSelect),
-        painter = painterResource(move.icon),
-        contentDescription = null
+            .clickable(onClick = onSelect)
     )
 }
 

@@ -13,4 +13,21 @@ data class AnvilConfig(
             target = newTarget.coerceIn(0, ANVIL_LIMIT)
         )
     }
+
+    fun getRequestList(): List<AnvilMove> {
+        val lastElements = mutableListOf<AnvilMove>()
+
+        if (thirdMove != null) {
+            lastElements.add(thirdMove)
+        }
+
+        if (secondMove != null) {
+            lastElements.add(secondMove)
+        }
+
+        if (finalMove != null) {
+            lastElements.add(finalMove)
+        }
+        return lastElements
+    }
 }
