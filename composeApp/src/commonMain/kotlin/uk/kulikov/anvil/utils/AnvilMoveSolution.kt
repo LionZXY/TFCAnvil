@@ -41,23 +41,19 @@ private fun isPathValid(value: Int, path: List<AnvilMove>, config: AnvilConfig):
     if (value != config.target) {
         return false
     }
+    val lastElements = mutableListOf<AnvilMove>()
 
     if (config.thirdMove != null) {
-        if (path.size < 3 || path[path.lastIndex - 2] != config.thirdMove) {
-            return false
-        }
+        lastElements.add(config.thirdMove)
     }
 
     if (config.secondMove != null) {
-        if (path.size < 2 || path[path.lastIndex - 1] != config.secondMove) {
-            return false
-        }
-    }
-    if (config.finalMove != null) {
-        if (path.isEmpty() || path.lastOrNull() != config.finalMove) {
-            return false
-        }
+        lastElements.add(config.secondMove)
     }
 
-    return true
+    if (config.finalMove != null) {
+        lastElements.add(config.finalMove)
+    }
+
+    return path.takeLast(lastElements.size) == lastElements
 }
