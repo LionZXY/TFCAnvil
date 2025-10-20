@@ -24,12 +24,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import uk.kulikov.anvil.composable.solution.AnvilMoveSolutionComposable
+import uk.kulikov.anvil.composable.solution.SolutionViewModel
 import uk.kulikov.anvil.composable.tool.ToolConfigurationArea
 import uk.kulikov.anvil.model.AnvilConfig
 
 @Composable
 @Preview
-fun App() {
+fun App(
+    viewModel: SolutionViewModel
+) {
     MaterialTheme {
         Column(
             modifier = Modifier
@@ -37,15 +40,13 @@ fun App() {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val config = remember { mutableStateOf(AnvilConfig()) }
-
             ToolConfigurationArea(
                 modifier = Modifier.padding(16.dp),
-                anvilConfig = config
+                anvilConfig = viewModel.configFlow
             )
             AnvilMoveSolutionComposable(
                 modifier = Modifier.padding(16.dp),
-                anvilConfig = config
+                viewModel = viewModel
             )
 
 

@@ -1,12 +1,14 @@
 package uk.kulikov.anvil.utils
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.isActive
 import uk.kulikov.anvil.model.AnvilConfig
 import uk.kulikov.anvil.model.AnvilMove
 
 class AnvilMoveException(message: String) : Throwable(message)
 
-fun solve(
-    config: AnvilConfig
+suspend fun solve(
+    scope: CoroutineScope, config: AnvilConfig
 ): Result<List<AnvilMove>> = runCatching {
     val req3 = config.getRequestList()
     // Queue holds pairs: current sum and path (list of moves)
@@ -17,7 +19,7 @@ fun solve(
     val seen = HashSet<Pair<Int, List<AnvilMove>>>()
     seen.add(0 to emptyList())
 
-    while (q.isNotEmpty()) {
+    while (scope.isActive && q.isNotEmpty()) {
         val (value, path) = q.removeFirst()
 
         // Check target and last 3 moves

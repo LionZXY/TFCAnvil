@@ -9,18 +9,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.ajailani.grid_compose.component.VerticalGrid
 import com.ajailani.grid_compose.util.GridCellType
+import kotlinx.coroutines.flow.MutableStateFlow
 import uk.kulikov.anvil.model.AnvilConfig
 
 @Composable
 fun ToolConfigurationArea(
-    anvilConfig: MutableState<AnvilConfig>,
+    anvilConfig: MutableStateFlow<AnvilConfig>,
     modifier: Modifier = Modifier
 ) {
     Column(modifier) {
@@ -46,17 +48,18 @@ private val MIN_WIDTH = 230.dp
 
 @Composable
 private fun ToolConfigurationAreaInternal(
-    anvilConfig: MutableState<AnvilConfig>,
+    anvilConfig: MutableStateFlow<AnvilConfig>,
 ) {
+    val anvilConfigValue by anvilConfig.collectAsState()
     TargetSelectableComposable(
         modifier = Modifier.padding(horizontal = 16.dp),
-        counter = anvilConfig.value.target,
+        counter = anvilConfigValue.target,
         onCounterChange = {
             anvilConfig.value = anvilConfig.value.copyWithNewTarget(newTarget = it)
         }
     )
     TargetSliderComposable(
-        counter = anvilConfig.value.target,
+        counter = anvilConfigValue.target,
         onCounterChange = {
             anvilConfig.value = anvilConfig.value.copyWithNewTarget(newTarget = it)
         }
@@ -78,9 +81,9 @@ private fun ToolConfigurationAreaInternal(
                     else -> "3rd last"
                 }
                 val selectedMove = when (index) {
-                    0 -> anvilConfig.value.finalMove
-                    1 -> anvilConfig.value.secondMove
-                    else -> anvilConfig.value.thirdMove
+                    0 -> anvilConfigValue.finalMove
+                    1 -> anvilConfigValue.secondMove
+                    else -> anvilConfigValue.thirdMove
                 }
 
                 AnvilMoveTileComposable(

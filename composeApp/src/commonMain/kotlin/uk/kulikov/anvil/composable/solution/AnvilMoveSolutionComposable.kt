@@ -48,23 +48,11 @@ private const val SETTING_KEY = "step_by_step"
 @OptIn(ExperimentalSettingsApi::class)
 @Composable
 fun AnvilMoveSolutionComposable(
-    anvilConfig: State<AnvilConfig>,
+    viewModel: SolutionViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val anvilConfigDerived = derivedStateOf { anvilConfig.value }
-    var solution by remember {
-        mutableStateOf<Result<List<AnvilMove>>?>(null)
-    }
-    val scope = rememberCoroutineScope()
-    DisposableEffect(anvilConfigDerived.value to scope) {
-        solution = null
-        val job = scope.launch {
-            solution = solve(anvilConfigDerived.value)
-        }
-        onDispose {
-            job.cancel()
-        }
-    }
+    val solution by viewModel.solutionFlow.collectAsState()
+    val config by viewModel.configFlow.collectAsState()
 
 
     Column(modifier) {
@@ -106,7 +94,7 @@ fun AnvilMoveSolutionComposable(
             val result = solution?.getOrNull()
             if (result != null) {
                 if (stepByStepSolution) {
-                    StepByStepSolutionInternal(anvilConfig.value, result)
+                    StepByStepSolutionInternal(config, result)
                 } else {
                     AnvilMoveSolutionInternal(
                         moves = result
